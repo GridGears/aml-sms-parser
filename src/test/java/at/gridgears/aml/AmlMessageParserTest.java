@@ -76,4 +76,40 @@ public class AmlMessageParserTest {
 
 		parser.parse(unknownAttribute);
 	}
+
+	@Test
+	public void incorrectDateFormat() throws AmlException {
+		String invalidDateFormat = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=122";
+
+		thrown.expect(AmlParseException.class);
+
+		parser.parse(invalidDateFormat);
+	}
+
+	@Test
+	public void unknownPositioningMethod() throws AmlException {
+		String unknownPositioningMethod = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=Z;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
+
+		thrown.expect(AmlParseException.class);
+
+		parser.parse(unknownPositioningMethod);
+	}
+
+	@Test
+	public void invalidLatitude() throws AmlException {
+		String invalidLatitude = "A\"ML=1;lt=+g4.7d397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
+
+		thrown.expect(AmlParseException.class);
+
+		parser.parse(invalidLatitude);
+	}
+
+	@Test
+	public void invalidLevelOfConfidence() throws AmlException {
+		String invalidLevelOfConfidence = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=99.9;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=130";
+
+		thrown.expect(AmlParseException.class);
+
+		parser.parse(invalidLevelOfConfidence);
+	}
 }

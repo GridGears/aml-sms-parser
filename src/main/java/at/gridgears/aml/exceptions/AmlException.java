@@ -29,4 +29,8 @@ public class AmlException extends Exception {
     AmlException(String message) {
         super(message);
     }
+
+    public AmlException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

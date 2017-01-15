@@ -52,7 +52,7 @@ public final class AmlMessage {
 
     private Integer length;
 
-    AmlMessage(Integer version, double latitude, double longitude, double radiusMeters, String imsi, String imei, Date timeOfPositioning, int levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
+    AmlMessage(Integer version, Double latitude, Double longitude, Double radiusMeters, String imsi, String imei, Date timeOfPositioning, Integer levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
         this.version = version;
         this.latitude = latitude;
         this.longitude = longitude;

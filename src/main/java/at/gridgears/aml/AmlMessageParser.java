@@ -96,45 +96,39 @@ public class AmlMessageParser {
         }
     }
 
-    private Integer getHeaderValue(Map<String, Pair> pairs) {
+    private Integer getHeaderValue(Map<String, Pair> pairs) throws AmlParseException {
         return getIntegerValue(pairs, "A\"ML");
     }
 
-    private Double getLatitude(Map<String, Pair> pairs) {
+    private Double getLatitude(Map<String, Pair> pairs) throws AmlParseException {
         return getDoubleValue(pairs, "lt");
     }
 
-    private Double getLongitude(Map<String, Pair> pairs) {
+    private Double getLongitude(Map<String, Pair> pairs) throws AmlParseException {
         return getDoubleValue(pairs, "lg");
     }
 
-    private Double getRadius(Map<String, Pair> pairs) {
+    private Double getRadius(Map<String, Pair> pairs) throws AmlParseException {
         return getDoubleValue(pairs, "rd");
     }
 
-    private Date getTop(Map<String, Pair> pairs) {
-        Pair pair = pairs.get("top");
-        if (Objects.nonNull(pair)) {
-            SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            try {
-                return format.parse(pair.attributeValue);
-            } catch (ParseException e) {
-                return null;
-            }
-        } else {
-            return null;
-        }
+    private Date getTop(Map<String, Pair> pairs) throws AmlParseException {
+        return getDateValue(pairs, "top", DATE_FORMAT);
     }
 
-    private Integer getLoc(Map<String, Pair> pairs) {
+    private Integer getLoc(Map<String, Pair> pairs) throws AmlParseException {
         return getIntegerValue(pairs, "lc");
     }
 
-    private AmlMessage.PositioningMethod getPositioningMethod(Map<String, Pair> pairs) {
+    private AmlMessage.PositioningMethod getPositioningMethod(Map<String, Pair> pairs) throws AmlParseException {
         Pair pair = pairs.get("pm");
         if (Objects.nonNull(pair)) {
-            return AmlMessage.PositioningMethod.get(pair.attributeValue);
+            AmlMessage.PositioningMethod positioningMethod = AmlMessage.PositioningMethod.get(pair.attributeValue);
+            if (positioningMethod == null) {
+                throw new AmlParseException("unknown position method: "+pair.attributeValue);
+            } else {
+                return positioningMethod;
+            }
         } else {
             return null;
         }
@@ -156,7 +150,7 @@ public class AmlMessageParser {
         return getStringValue(pairs, "mnc");
     }
 
-    private Integer getMessageLength(Map<String, Pair> pairs) {
+    private Integer getMessageLength(Map<String, Pair> pairs) throws AmlParseException {
         return getIntegerValue(pairs,"ml");
     }
 
@@ -169,19 +163,42 @@ public class AmlMessageParser {
         }
     }
 
-    private Integer getIntegerValue(Map<String, Pair> pairs, String attributeName) {
+    private Integer getIntegerValue(Map<String, Pair> pairs, String attributeName) throws AmlParseException {
         Pair pair = pairs.get(attributeName);
         if (Objects.nonNull(pair)) {
-            return convertPotentialInteger(pair.attributeValue);
+            try {
+                return Integer.parseInt(pair.attributeValue);
+            } catch (NumberFormatException e) {
+                throw new AmlParseException("could not parse int for attribute "+attributeName,e);
+            }
         } else {
             return null;
         }
     }
 
-    private Double getDoubleValue(Map<String, Pair> pairs, String attributeName) {
+    private Double getDoubleValue(Map<String, Pair> pairs, String attributeName) throws AmlParseException {
         Pair pair = pairs.get(attributeName);
         if (Objects.nonNull(pair)) {
-            return convertPotentialDouble(pair.attributeValue);
+            try {
+                return Double.parseDouble(pair.attributeValue);
+            } catch (NumberFormatException e) {
+                throw new AmlParseException("could not parse double for attribute: "+attributeName, e);
+            }
+        } else {
+            return null;
+        }
+    }
+
+    private Date getDateValue(Map<String, Pair> pairs, String attributeName, String formatString) throws AmlParseException {
+        Pair pair = pairs.get(attributeName);
+        if (Objects.nonNull(pair)) {
+            SimpleDateFormat format = new SimpleDateFormat(formatString);
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
+            try {
+                return format.parse(pair.attributeValue);
+            } catch (ParseException e) {
+                throw new AmlParseException("incorrect date format for attribute "+attributeName,e);
+            }
         } else {
             return null;
         }
@@ -190,14 +207,6 @@ public class AmlMessageParser {
     private Integer convertPotentialInteger(String integerString) {
         try {
             return Integer.parseInt(integerString);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
-    private Double convertPotentialDouble(String doubleString) {
-        try {
-            return Double.parseDouble(doubleString);
         } catch (NumberFormatException e) {
             return null;
         }

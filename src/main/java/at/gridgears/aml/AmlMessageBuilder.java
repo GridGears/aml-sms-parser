@@ -28,13 +28,13 @@ import java.util.Date;
 
 final class AmlMessageBuilder {
     private Integer version;
-    private double latitude;
-    private double longitude;
-    private double radiusMeters;
+    private Double latitude;
+    private Double longitude;
+    private Double radiusMeters;
     private String imsi;
     private String imei;
     private Date timeOfPositioning;
-    private int levelOfConfidence;
+    private Integer levelOfConfidence;
     private AmlMessage.PositioningMethod positionMethod;
     private String mcc;
     private String mnc;
