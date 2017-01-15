@@ -29,8 +29,4 @@ public class AmlParseException extends AmlException {
     public AmlParseException(String message) {
         super(message);
     }
-
-    public AmlParseException(String message, Throwable cause) {
-        super(message, cause);
-    }
 }

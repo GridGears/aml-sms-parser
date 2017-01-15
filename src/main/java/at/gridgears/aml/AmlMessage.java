@@ -25,33 +25,32 @@
 package at.gridgears.aml;
 
 import java.util.Date;
-import java.util.Objects;
 
 public final class AmlMessage {
 
-    private Integer version;
+    private final Integer version;
 
-    private Double latitude;
+    private final Double latitude;
 
-    private Double longitude;
+    private final Double longitude;
 
-    private Double radiusMeters;
+    private final Double radiusMeters;
 
-    private String imsi;
+    private final String imsi;
 
-    private String imei;
+    private final String imei;
 
-    private Date timeOfPositioning;
+    private final Date timeOfPositioning;
 
-    private Integer levelOfConfidence;
+    private final Integer levelOfConfidence;
 
-    private PositioningMethod positionMethod;
+    private final PositioningMethod positionMethod;
 
-    private String mcc;
+    private final String mcc;
 
-    private String mnc;
+    private final String mnc;
 
-    private Integer length;
+    private final Integer length;
 
     AmlMessage(Integer version, Double latitude, Double longitude, Double radiusMeters, String imsi, String imei, Date timeOfPositioning, Integer levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
         this.version = version;
@@ -120,25 +119,6 @@ public final class AmlMessage {
         GNSS,
         WIFI_SIGNAL,
         CELL,
-        NO_LOCATION;
-
-        public static PositioningMethod get(final String pm) {
-            if(Objects.isNull(pm)) {
-                return null;
-            }
-
-            switch (pm) {
-                case "G":
-                    return GNSS;
-                case "W":
-                    return WIFI_SIGNAL;
-                case "C":
-                    return CELL;
-                case "N":
-                    return NO_LOCATION;
-                default:
-                    return null;
-            }
-        }
+        NO_LOCATION
     }
 }
