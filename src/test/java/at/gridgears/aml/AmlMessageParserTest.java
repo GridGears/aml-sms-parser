@@ -2,6 +2,7 @@ package at.gridgears.aml;
 
 import at.gridgears.aml.exceptions.AmlException;
 import at.gridgears.aml.exceptions.AmlParseException;
+import at.gridgears.aml.exceptions.AmlValidationException;
 import at.gridgears.aml.validation.Validator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -10,6 +11,7 @@ import org.junit.rules.ExpectedException;
 
 import java.util.Date;
 
+import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -25,7 +27,7 @@ public class AmlMessageParserTest {
 
 	@Before
 	public void init() {
-		this.parser = new AmlMessageParser();
+		this.parser = new AmlMessageParser(new Settings(new NoValidation()));
 	}
 
 
@@ -111,5 +113,58 @@ public class AmlMessageParserTest {
 		thrown.expect(AmlParseException.class);
 
 		parser.parse(invalidLevelOfConfidence);
+	}
+
+	@Test
+	public void noHeaderValue() throws AmlException {
+		String noHeaderValue = "lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=121";
+
+		AmlMessage message = parser.parse(noHeaderValue);
+
+		assertThat(message.getVersion(), nullValue());
+	}
+
+	@Test
+	public void noLatitude() throws AmlException {
+		String noLatitude = "A\"ML=1;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=115";
+
+		AmlMessage message = parser.parse(noLatitude);
+
+		assertThat(message.getLatitude(), nullValue());
+	}
+
+	@Test
+	public void noPositioningMethod() throws AmlException {
+		String noPositionMethod = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=123";
+
+		AmlMessage message = parser.parse(noPositionMethod);
+
+		assertThat(message.getPositionMethod(), nullValue());
+	}
+
+	@Test
+	public void noImsi() throws AmlException {
+		String noImsi = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;ei=1234567890123456;mcc=234;mnc=30;ml=109";
+
+		AmlMessage message = parser.parse(noImsi);
+
+		assertThat(message.getImsi(), nullValue());
+	}
+
+	@Test
+	public void noTimeOfPositioning() throws AmlException {
+		String noTimeOfPositioning = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=109";
+
+		AmlMessage message = parser.parse(noTimeOfPositioning);
+
+		assertThat(message.getTimeOfPositioning(), nullValue());
+	}
+
+	private static class NoValidation implements Validator {
+
+		@Override
+		public AmlMessage validate(AmlMessage message) throws AmlValidationException {
+			return message;
+		}
 	}
 }

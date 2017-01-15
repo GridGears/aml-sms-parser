@@ -1,7 +1,7 @@
 # Advanced Mobile Location SMS Parser
 
 [![Build Status](https://travis-ci.org/GridGears/aml-sms-parser.svg?branch=master)](https://travis-ci.org/GridGears/aml-sms-parser)
-[![Code Coverage](https://codecov.io/github/GridGears/aml-sms-parser/coverage.svg?branch=master)](https://codecov.io/github/GridGears/aml-sms-parser/coverage.svg?branch=master)
+[![Code Coverage](https://codecov.io/github/GridGears/aml-sms-parser/coverage.svg?branch=master)](https://codecov.io/github/GridGears/aml-sms-parser/)
 
 ## License
 MIT License

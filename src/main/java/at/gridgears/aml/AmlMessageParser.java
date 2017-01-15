@@ -204,14 +204,6 @@ public class AmlMessageParser {
         }
     }
 
-    private Integer convertPotentialInteger(String integerString) {
-        try {
-            return Integer.parseInt(integerString);
-        } catch (NumberFormatException e) {
-            return null;
-        }
-    }
-
     private static class Pair {
         private String attributeName = null;
         private String attributeValue = null;
