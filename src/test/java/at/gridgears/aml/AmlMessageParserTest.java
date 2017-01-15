@@ -48,6 +48,7 @@ public class AmlMessageParserTest {
 		assertThat(amlMessage.getImei(),is("1234567890123456"));
 		assertThat(amlMessage.getMcc(),is("234"));
 		assertThat(amlMessage.getMnc(),is("30"));
+		assertThat(amlMessage.getLength(),is(128));
 	}
 
 	@Test
