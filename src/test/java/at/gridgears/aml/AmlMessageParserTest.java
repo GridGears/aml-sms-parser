@@ -32,10 +32,10 @@ public class AmlMessageParserTest {
 
 
 	@Test
-	public void validAmlMessage() throws AmlException {
+	public void validAmlMessageWithDefaultValidation() throws AmlException {
 		String validMessage = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
 
-		AmlMessage amlMessage = parser.parse(validMessage);
+		AmlMessage amlMessage = new AmlMessageParser().parse(validMessage);
 
 		assertThat(amlMessage.getVersion(),is(1));
 		assertThat(amlMessage.getLatitude(),is(54.76397D));
