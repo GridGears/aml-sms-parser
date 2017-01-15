@@ -1,5 +1,7 @@
 # Advanced Mobile Location SMS Parser
 
+[![Build Status](https://travis-ci.org/GridGears/aml-sms-parser.svg?branch=master)](https://travis-ci.org/GridGears/aml-sms-parser)
+
 ## License
 MIT License
 
