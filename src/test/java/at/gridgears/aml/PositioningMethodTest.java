@@ -58,4 +58,9 @@ public class PositioningMethodTest {
     public void returnsNullOnUnknown() {
         assertThat(AmlMessage.PositioningMethod.get("ZZ"),nullValue());
     }
+
+    @Test
+    public void returnsNullOnNull() {
+        assertThat(AmlMessage.PositioningMethod.get(null),nullValue());
+    }
 }

@@ -25,6 +25,7 @@
 package at.gridgears.aml;
 
 import java.util.Date;
+import java.util.Objects;
 
 public final class AmlMessage {
 
@@ -122,6 +123,10 @@ public final class AmlMessage {
         NO_LOCATION;
 
         public static PositioningMethod get(final String pm) {
+            if(Objects.isNull(pm)) {
+                return null;
+            }
+
             switch (pm) {
                 case "G":
                     return GNSS;
