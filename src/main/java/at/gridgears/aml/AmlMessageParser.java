@@ -28,21 +28,12 @@ import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
 import at.gridgears.aml.validation.Validator;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Date;
+import java.util.Objects;
 
 public class AmlMessageParser {
-    private static final String DATE_FORMAT = "yyyyMMddHHmmss";
-    private static final String ATTRIBUTE_SEPARATOR = ";";
-    private static final String PAIR_SEPARATOR = "=";
-    private static List<String> KNOWN_ATTRIBUTE_NAMES = Arrays.asList("A\"ML","lt","lg","rd","top","lc","pm","si","ei","mcc","mnc","ml");
 
     private final Validator validator;
-
 
     public AmlMessageParser() {
         this(new Settings());
@@ -53,7 +44,7 @@ public class AmlMessageParser {
     }
 
     public AmlMessage parse(final String message) throws AmlParseException, AmlValidationException {
-        Map<String, Pair> attributes = Stream.of(message.split(ATTRIBUTE_SEPARATOR)).map(Pair::new).collect(Collectors.toMap(Pair::getKey, Function.identity(),(first, latest) -> latest));
+        Attributes attributes = Attributes.parse(message);
 
         checkMessageLength(message, attributes);
         checkAttributes(attributes);
@@ -70,154 +61,70 @@ public class AmlMessageParser {
                 .mnc(getMnc(attributes))
                 .timeOfPositioning(getTop(attributes))
                 .positionMethod(getPositioningMethod(attributes))
-                 .length(getMessageLength(attributes));
+                .length(getMessageLength(attributes));
 
 
         return validator.validate(builder.build());
     }
 
-    private void checkAttributes(Map<String, Pair> attributes) throws AmlParseException {
-        if(!KNOWN_ATTRIBUTE_NAMES.containsAll(attributes.keySet())) {
-            Set<String> unknownAttributes = attributes.keySet();
-            unknownAttributes.removeAll(KNOWN_ATTRIBUTE_NAMES);
-
-            throw new AmlParseException("unknown attributes "+unknownAttributes);
-        }
+    private void checkAttributes(Attributes attributes) throws AmlParseException {
+        attributes.check();
     }
 
-    private void checkMessageLength(String message, Map<String, Pair> attributes) throws AmlParseException {
+    private void checkMessageLength(String message, Attributes attributes) throws AmlParseException {
         Integer expectedMessageLength = getMessageLength(attributes);
         Integer actualMessageLength = message.length();
 
-        if(!Objects.equals(expectedMessageLength, actualMessageLength)) {
-            throw new AmlParseException("expected message length "+expectedMessageLength + " but was "+actualMessageLength);
+        if (!Objects.equals(expectedMessageLength, actualMessageLength)) {
+            throw new AmlParseException("expected message length " + expectedMessageLength + " but was " + actualMessageLength);
         }
     }
 
-    private Integer getHeaderValue(Map<String, Pair> attributes) throws AmlParseException {
-        return getIntegerValue(attributes, "A\"ML");
+    private Integer getHeaderValue(Attributes attributes) throws AmlParseException {
+        return attributes.get("A\"ML", Attribute::getIntegerValue);
     }
 
-    private Double getLatitude(Map<String, Pair> attributes) throws AmlParseException {
-        return getDoubleValue(attributes, "lt");
+    private Double getLatitude(Attributes attributes) throws AmlParseException {
+        return attributes.get("lt", Attribute::getDoubleValue);
     }
 
-    private Double getLongitude(Map<String, Pair> attributes) throws AmlParseException {
-        return getDoubleValue(attributes, "lg");
+    private Double getLongitude(Attributes attributes) throws AmlParseException {
+        return attributes.get("lg", Attribute::getDoubleValue);
     }
 
-    private Double getRadius(Map<String, Pair> attributes) throws AmlParseException {
-        return getDoubleValue(attributes, "rd");
+    private Double getRadius(Attributes attributes) throws AmlParseException {
+        return attributes.get("rd", Attribute::getDoubleValue);
     }
 
-    private Date getTop(Map<String, Pair> attributes) throws AmlParseException {
-        return getDateValue(attributes, "top", DATE_FORMAT);
+    private Date getTop(Attributes attributes) throws AmlParseException {
+        return attributes.get("top", Attribute::getDateValue);
     }
 
-    private Integer getLoc(Map<String, Pair> attributes) throws AmlParseException {
-        return getIntegerValue(attributes, "lc");
+    private Integer getLoc(Attributes attributes) throws AmlParseException {
+        return attributes.get("lc", Attribute::getIntegerValue);
     }
 
-    private AmlMessage.PositioningMethod getPositioningMethod(Map<String, Pair> attributes) throws AmlParseException {
-        Pair pair = attributes.get("pm");
-        if (Objects.nonNull(pair)) {
-            AmlMessage.PositioningMethod positioningMethod = AmlMessage.PositioningMethod.get(pair.attributeValue);
-            if (positioningMethod == null) {
-                throw new AmlParseException("unknown position method: "+pair.attributeValue);
-            } else {
-                return positioningMethod;
-            }
-        } else {
-            return null;
-        }
+    private AmlMessage.PositioningMethod getPositioningMethod(Attributes attributes) throws AmlParseException {
+        return attributes.get("pm", Attribute::getPositioningMethod);
     }
 
-    private String getImsi(Map<String, Pair> attributes) {
-        return getStringValue(attributes,"si");
+    private String getImsi(Attributes attributes) throws AmlParseException {
+        return attributes.get("si", Attribute::getStringValue);
     }
 
-    private String getImei(Map<String, Pair> attributes) {
-        return getStringValue(attributes, "ei");
+    private String getImei(Attributes attributes) throws AmlParseException {
+        return attributes.get("ei", Attribute::getStringValue);
     }
 
-    private String getMcc(Map<String, Pair> attributes) {
-        return getStringValue(attributes, "mcc");
+    private String getMcc(Attributes attributes) throws AmlParseException {
+        return attributes.get("mcc", Attribute::getStringValue);
     }
 
-    private String getMnc(Map<String, Pair> attributes) {
-        return getStringValue(attributes, "mnc");
+    private String getMnc(Attributes attributes) throws AmlParseException {
+        return attributes.get("mnc", Attribute::getStringValue);
     }
 
-    private Integer getMessageLength(Map<String, Pair> attributes) throws AmlParseException {
-        return getIntegerValue(attributes,"ml");
-    }
-
-    private String getStringValue(Map<String, Pair> attributes, String attributeName) {
-        Pair pair = attributes.get(attributeName);
-        if (Objects.nonNull(pair)) {
-           return pair.attributeValue;
-        } else {
-            return null;
-        }
-    }
-
-    private Integer getIntegerValue(Map<String, Pair> attributes, String attributeName) throws AmlParseException {
-        Pair pair = attributes.get(attributeName);
-        if (Objects.nonNull(pair)) {
-            try {
-                return Integer.parseInt(pair.attributeValue);
-            } catch (NumberFormatException e) {
-                throw new AmlParseException("could not parse int for attribute "+attributeName,e);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private Double getDoubleValue(Map<String, Pair> attributes, String attributeName) throws AmlParseException {
-        Pair pair = attributes.get(attributeName);
-        if (Objects.nonNull(pair)) {
-            try {
-                return Double.parseDouble(pair.attributeValue);
-            } catch (NumberFormatException e) {
-                throw new AmlParseException("could not parse double for attribute: "+attributeName, e);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private Date getDateValue(Map<String, Pair> attributes, String attributeName, String formatString) throws AmlParseException {
-        Pair pair = attributes.get(attributeName);
-        if (Objects.nonNull(pair)) {
-            SimpleDateFormat format = new SimpleDateFormat(formatString);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            try {
-                return format.parse(pair.attributeValue);
-            } catch (ParseException e) {
-                throw new AmlParseException("incorrect date format for attribute "+attributeName,e);
-            }
-        } else {
-            return null;
-        }
-    }
-
-    private static class Pair {
-        private String attributeName = null;
-        private String attributeValue = null;
-
-        private Pair(String pair) {
-            String[] attribute = pair.split(PAIR_SEPARATOR);
-
-            attributeName = attribute[0];
-
-            if (attribute.length > 1) {
-                attributeValue = attribute[1];
-            }
-        }
-
-        String getKey() {
-            return attributeName;
-        }
+    private Integer getMessageLength(Attributes attributes) throws AmlParseException {
+        return attributes.get("ml", Attribute::getIntegerValue);
     }
 }
