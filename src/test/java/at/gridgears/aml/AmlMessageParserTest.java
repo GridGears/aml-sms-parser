@@ -161,7 +161,28 @@ public class AmlMessageParserTest {
 		assertThat(message.getTimeOfPositioning(), nullValue());
 	}
 
-	private static class NoValidation implements Validator {
+	@Test
+    public void invalidAttributePair() throws AmlException {
+	    String invalidAttribute = "A\"ML=1;a==;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=132";
+
+	    thrown.expect(AmlParseException.class);
+
+	    parser.parse(invalidAttribute);
+    }
+
+
+    @Test
+    public void invalidAttribute() throws AmlException {
+        String invalidAttribute = "A\"ML=1;;;;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=131";
+
+        thrown.expect(AmlParseException.class);
+
+        parser.parse(invalidAttribute);
+    }
+
+
+
+    private static class NoValidation implements Validator {
 
 		@Override
 		public AmlMessage validate(AmlMessage message) throws AmlValidationException {

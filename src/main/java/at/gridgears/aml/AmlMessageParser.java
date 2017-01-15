@@ -53,7 +53,7 @@ public class AmlMessageParser {
     }
 
     public AmlMessage parse(final String message) throws AmlParseException, AmlValidationException {
-        Map<String, Pair> pairs = Stream.of(message.split(ATTRIBUTE_SEPARATOR)).map(Pair::new).collect(Collectors.toMap(Pair::getKey, Function.identity()));
+        Map<String, Pair> pairs = Stream.of(message.split(ATTRIBUTE_SEPARATOR)).map(Pair::new).collect(Collectors.toMap(Pair::getKey, Function.identity(),(first, latest) -> latest));
 
         checkMessageLength(message, pairs);
         checkAttributes(pairs);
@@ -77,8 +77,6 @@ public class AmlMessageParser {
     }
 
     private void checkAttributes(Map<String, Pair> pairs) throws AmlParseException {
-
-
         if(!KNOWN_ATTRIBUTE_NAMES.containsAll(pairs.keySet())) {
             Set<String> unknownAttributes = pairs.keySet();
             unknownAttributes.removeAll(KNOWN_ATTRIBUTE_NAMES);
@@ -210,9 +208,9 @@ public class AmlMessageParser {
 
         private Pair(String pair) {
             String[] attribute = pair.split(PAIR_SEPARATOR);
-            if (attribute.length > 0) {
-                attributeName = attribute[0];
-            }
+
+            attributeName = attribute[0];
+
             if (attribute.length > 1) {
                 attributeValue = attribute[1];
             }
