@@ -24,7 +24,7 @@
 
 package at.gridgears.aml;
 
-import java.util.Date;
+import java.time.Instant;
 
 public final class AmlMessage {
 
@@ -40,7 +40,7 @@ public final class AmlMessage {
 
     private final String imei;
 
-    private final Date timeOfPositioning;
+    private final Instant timeOfPositioning;
 
     private final Integer levelOfConfidence;
 
@@ -52,7 +52,7 @@ public final class AmlMessage {
 
     private final Integer length;
 
-    AmlMessage(Integer version, Double latitude, Double longitude, Double radiusMeters, String imsi, String imei, Date timeOfPositioning, Integer levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
+    AmlMessage(Integer version, Double latitude, Double longitude, Double radiusMeters, String imsi, String imei, Instant timeOfPositioning, Integer levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
         this.version = version;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -91,7 +91,7 @@ public final class AmlMessage {
         return imei;
     }
 
-    public Date getTimeOfPositioning() {
+    public Instant getTimeOfPositioning() {
         return timeOfPositioning;
     }
 

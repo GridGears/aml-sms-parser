@@ -32,7 +32,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.Date;
+import java.time.Instant;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
@@ -53,7 +53,7 @@ public class DefaultValidatorTest {
                 .latitude(54.4)
                 .longitude(12.32)
                 .radiusMeters(34.2)
-                .timeOfPositioning(new Date())
+                .timeOfPositioning(Instant.now())
                 .levelOfConfidence(85)
                 .positionMethod(AmlMessage.PositioningMethod.CELL)
                 .imsi("1654321654")
