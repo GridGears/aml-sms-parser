@@ -30,11 +30,7 @@ import static at.gridgears.aml.AmlMessage.PositioningMethod.*;
 
 final class PositioningMethodMapper {
 
-    private PositioningMethodMapper() {
-        //must not be instantiated
-    }
-
-    static AmlMessage.PositioningMethod get(final String pm) {
+    AmlMessage.PositioningMethod get(final String pm) {
         if (Objects.isNull(pm)) {
             return null;
         }

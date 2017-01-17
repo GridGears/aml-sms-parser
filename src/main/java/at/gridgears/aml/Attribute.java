@@ -32,6 +32,7 @@ import java.util.TimeZone;
 class Attribute {
     private static final String SEPARATOR = "=";
     private static final String DATE_FORMAT = "yyyyMMddHHmmss";
+    private static final PositioningMethodMapper POSITIONING_METHOD_MAPPER = new PositioningMethodMapper();
 
     private final String name;
     private final String value;
@@ -92,7 +93,7 @@ class Attribute {
 
     AmlMessage.PositioningMethod getPositioningMethod() {
         try {
-            return PositioningMethodMapper.get(value);
+            return POSITIONING_METHOD_MAPPER.get(value);
         } catch (IllegalArgumentException e) {
             return null;
         }

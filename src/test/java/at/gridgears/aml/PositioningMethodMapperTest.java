@@ -34,38 +34,40 @@ import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertThat;
 
 public class PositioningMethodMapperTest {
+    private final PositioningMethodMapper positioningMethodMapper = new PositioningMethodMapper();
+
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
     public void resolveGNSS() {
-        assertThat(PositioningMethodMapper.get("G"), is(GNSS));
+        assertThat(positioningMethodMapper.get("G"), is(GNSS));
     }
 
     @Test
     public void resolveWifiSignal() {
-        assertThat(PositioningMethodMapper.get("W"), is(WIFI_SIGNAL));
+        assertThat(positioningMethodMapper.get("W"), is(WIFI_SIGNAL));
     }
 
     @Test
     public void resolveCell() {
-        assertThat(PositioningMethodMapper.get("C"), is(CELL));
+        assertThat(positioningMethodMapper.get("C"), is(CELL));
     }
 
     @Test
     public void resolveNoLocation() {
-        assertThat(PositioningMethodMapper.get("N"), is(NO_LOCATION));
+        assertThat(positioningMethodMapper.get("N"), is(NO_LOCATION));
     }
 
     @Test
     public void throwsExceptionOnUnknown() {
         thrown.expect(IllegalArgumentException.class);
 
-        PositioningMethodMapper.get("ZZ");
+        positioningMethodMapper.get("ZZ");
     }
 
     @Test
     public void returnsNullOnNull() {
-        assertThat(PositioningMethodMapper.get(null), nullValue());
+        assertThat(positioningMethodMapper.get(null), nullValue());
     }
 }
