@@ -33,7 +33,9 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
-import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 
 import static org.hamcrest.CoreMatchers.nullValue;
 import static org.hamcrest.core.Is.is;
@@ -56,7 +58,7 @@ public class AmlMessageParserTest {
 
 
 	@Test
-	public void validAmlMessageWithDefaultValidation() throws AmlException {
+	public void validAmlMessageWithDefaultValidation() throws AmlException, ParseException {
 		String validMessage = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
 
 		AmlMessage amlMessage = new AmlMessageParser().parse(validMessage);
@@ -65,7 +67,9 @@ public class AmlMessageParserTest {
 		assertThat(amlMessage.getLatitude(),is(54.76397D));
 		assertThat(amlMessage.getLongitude(),is(-0.18305D));
 		assertThat(amlMessage.getRadiusMeters(),is(50D));
-		assertThat(amlMessage.getTimeOfPositioning(),is(new Date(1374070775000L)));
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		assertThat(amlMessage.getTimeOfPositioning(),is(dateFormat.parse("2013-07-17_14:19:35").toInstant()));
 		assertThat(amlMessage.getLevelOfConfidence(),is(90));
 		assertThat(amlMessage.getPositionMethod(), is(AmlMessage.PositioningMethod.WIFI_SIGNAL));
 		assertThat(amlMessage.getImsi(),is("123456789012345"));

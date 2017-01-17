@@ -26,7 +26,7 @@ package at.gridgears.aml;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.TimeZone;
 
 class Attribute {
@@ -80,11 +80,11 @@ class Attribute {
         }
     }
 
-    Date getDateValue() {
+    Instant getInstantValue() {
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
-            return format.parse(value);
+            return format.parse(value).toInstant();
         } catch (ParseException e) {
             return null;
         }
