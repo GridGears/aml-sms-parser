@@ -24,7 +24,7 @@
 
 package at.gridgears.aml;
 
-import java.util.Date;
+import java.time.Instant;
 
 final class AmlMessageBuilder {
     private Integer version;
@@ -33,7 +33,7 @@ final class AmlMessageBuilder {
     private Double radiusMeters;
     private String imsi;
     private String imei;
-    private Date timeOfPositioning;
+    private Instant timeOfPositioning;
     private Integer levelOfConfidence;
     private AmlMessage.PositioningMethod positionMethod;
     private String mcc;
@@ -77,7 +77,7 @@ final class AmlMessageBuilder {
         return this;
     }
 
-    AmlMessageBuilder timeOfPositioning(Date timeOfPositioning) {
+    AmlMessageBuilder timeOfPositioning(Instant timeOfPositioning) {
         this.timeOfPositioning = timeOfPositioning;
         return this;
     }

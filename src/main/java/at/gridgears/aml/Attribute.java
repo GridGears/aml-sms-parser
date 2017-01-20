@@ -26,12 +26,13 @@ package at.gridgears.aml;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.Instant;
 import java.util.TimeZone;
 
 class Attribute {
     private static final String SEPARATOR = "=";
     private static final String DATE_FORMAT = "yyyyMMddHHmmss";
+    private static final PositioningMethodMapper POSITIONING_METHOD_MAPPER = new PositioningMethodMapper();
 
     private final String name;
     private final String value;
@@ -80,11 +81,11 @@ class Attribute {
         }
     }
 
-    Date getDateValue() {
+    Instant getInstantValue() {
         SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
         format.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
-            return format.parse(value);
+            return format.parse(value).toInstant();
         } catch (ParseException e) {
             return null;
         }
@@ -92,7 +93,7 @@ class Attribute {
 
     AmlMessage.PositioningMethod getPositioningMethod() {
         try {
-            return PositioningMethodMapper.get(value);
+            return POSITIONING_METHOD_MAPPER.get(value);
         } catch (IllegalArgumentException e) {
             return null;
         }

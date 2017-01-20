@@ -28,7 +28,7 @@ import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
 import at.gridgears.aml.validation.Validator;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 public class AmlMessageParser {
@@ -96,8 +96,8 @@ public class AmlMessageParser {
         return attributes.get("rd", Attribute::getDoubleValue);
     }
 
-    private Date getTop(Attributes attributes) throws AmlParseException {
-        return attributes.get("top", Attribute::getDateValue);
+    private Instant getTop(Attributes attributes) throws AmlParseException {
+        return attributes.get("top", Attribute::getInstantValue);
     }
 
     private Integer getLoc(Attributes attributes) throws AmlParseException {
