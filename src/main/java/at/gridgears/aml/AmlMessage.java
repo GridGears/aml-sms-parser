@@ -25,6 +25,7 @@
 package at.gridgears.aml;
 
 import java.time.Instant;
+import java.util.Objects;
 
 public final class AmlMessage {
 
@@ -52,7 +53,7 @@ public final class AmlMessage {
 
     private final Integer length;
 
-    AmlMessage(Integer version, Double latitude, Double longitude, Double radiusMeters, String imsi, String imei, Instant timeOfPositioning, Integer levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
+    public AmlMessage(Integer version, Double latitude, Double longitude, Double radiusMeters, String imsi, String imei, Instant timeOfPositioning, Integer levelOfConfidence, PositioningMethod positionMethod, String mcc, String mnc, Integer length) {
         this.version = version;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -120,5 +121,51 @@ public final class AmlMessage {
         WIFI_SIGNAL,
         CELL,
         NO_LOCATION
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AmlMessage that = (AmlMessage) o;
+        return Objects.equals(version, that.version) &&
+                Objects.equals(latitude, that.latitude) &&
+                Objects.equals(longitude, that.longitude) &&
+                Objects.equals(radiusMeters, that.radiusMeters) &&
+                Objects.equals(imsi, that.imsi) &&
+                Objects.equals(imei, that.imei) &&
+                Objects.equals(timeOfPositioning, that.timeOfPositioning) &&
+                Objects.equals(levelOfConfidence, that.levelOfConfidence) &&
+                positionMethod == that.positionMethod &&
+                Objects.equals(mcc, that.mcc) &&
+                Objects.equals(mnc, that.mnc) &&
+                Objects.equals(length, that.length);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(version, latitude, longitude, radiusMeters, imsi, imei, timeOfPositioning, levelOfConfidence, positionMethod, mcc, mnc, length);
+    }
+
+    @Override
+    public String toString() {
+        return "AmlMessage{" +
+                "version=" + version +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", radiusMeters=" + radiusMeters +
+                ", imsi='" + imsi + '\'' +
+                ", imei='" + imei + '\'' +
+                ", timeOfPositioning=" + timeOfPositioning +
+                ", levelOfConfidence=" + levelOfConfidence +
+                ", positionMethod=" + positionMethod +
+                ", mcc='" + mcc + '\'' +
+                ", mnc='" + mnc + '\'' +
+                ", length=" + length +
+                '}';
     }
 }
