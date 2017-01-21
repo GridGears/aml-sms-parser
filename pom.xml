@@ -145,6 +145,68 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>3.7</version>
+                <configuration>
+                    <sourceEncoding>utf-8</sourceEncoding>
+                    <targetJdk>1.8</targetJdk>
+                    <includeTests>true</includeTests>
+                    <printFailingErrors>true</printFailingErrors>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>3.0.4</version>
+                <executions>
+                    <execution>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <configuration>
+                            <xmlOutput>true</xmlOutput>
+                            <skip>false</skip>
+                            <includeTests>true</includeTests>
+                            <threshold>Low</threshold>
+                            <effort>Max</effort>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <skip>false</skip>
+                    <includeTests>true</includeTests>
+                    <threshold>Low</threshold>
+                    <effort>Max</effort>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.google.code.findbugs</groupId>
+                        <artifactId>annotations</artifactId>
+                        <version>3.0.1u2</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
         </plugins>
     </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>2.5</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

@@ -25,7 +25,6 @@
 package at.gridgears.aml.validation;
 
 import at.gridgears.aml.AmlMessage;
-import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
 
 import java.util.Objects;
