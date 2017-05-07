@@ -60,7 +60,7 @@ public class AmlMessageBuilderAdapterTest {
 
         private final Object expectedResult;
 
-        MessageBuilder(final Object expectedResult) {
+        MessageBuilder(Object expectedResult) {
             this.expectedResult = expectedResult;
         }
 

@@ -35,7 +35,7 @@ import java.time.Instant;
 import java.util.Objects;
 
 public class AmlMessageParser {
-    public <T> T parse(final String message, AmlMessageBuilder<T> builder) throws AmlParseException, AmlValidationException {
+    public <T> T parse(String message, AmlMessageBuilder<T> builder) throws AmlParseException, AmlValidationException {
         Attributes attributes = Attributes.parse(message);
 
         checkMessageLength(message, attributes);
@@ -55,11 +55,11 @@ public class AmlMessageParser {
                 .build();
     }
 
-    public <T> T parse(final String message, AmlMessageBuilder<T> builder, Validator<T> validator) throws AmlParseException, AmlValidationException {
+    public <T> T parse(String message, AmlMessageBuilder<T> builder, Validator<T> validator) throws AmlParseException, AmlValidationException {
         return validator.validate(parse(message, builder));
     }
 
-    public AmlMessage parse(final String message) throws AmlParseException, AmlValidationException {
+    public AmlMessage parse(String message) throws AmlParseException, AmlValidationException {
         return parse(message, DefaultAmlMessageBuilder.newAdvancedMobileLocation(), new DefaultValidator());
     }
 

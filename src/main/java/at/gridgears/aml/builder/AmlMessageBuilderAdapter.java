@@ -31,62 +31,62 @@ import java.time.Instant;
 public abstract class AmlMessageBuilderAdapter<T> implements AmlMessageBuilder<T> {
 
     @Override
-    public AmlMessageBuilder<T> version(final Integer version) {
+    public AmlMessageBuilder<T> version(Integer version) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> latitude(final Double latitude) {
+    public AmlMessageBuilder<T> latitude(Double latitude) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> longitude(final Double longitude) {
+    public AmlMessageBuilder<T> longitude(Double longitude) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> radiusMeters(final Double radiusMeters) {
+    public AmlMessageBuilder<T> radiusMeters(Double radiusMeters) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> imsi(final String imsi) {
+    public AmlMessageBuilder<T> imsi(String imsi) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> imei(final String imei) {
+    public AmlMessageBuilder<T> imei(String imei) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> timeOfPositioning(final Instant timeOfPositioning) {
+    public AmlMessageBuilder<T> timeOfPositioning(Instant timeOfPositioning) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> levelOfConfidence(final Integer levelOfConfidence) {
+    public AmlMessageBuilder<T> levelOfConfidence(Integer levelOfConfidence) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> positionMethod(final PositioningMethod positionMethod) {
+    public AmlMessageBuilder<T> positionMethod(PositioningMethod positionMethod) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> mcc(final String mcc) {
+    public AmlMessageBuilder<T> mcc(String mcc) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> mnc(final String mnc) {
+    public AmlMessageBuilder<T> mnc(String mnc) {
         return this;
     }
 
     @Override
-    public AmlMessageBuilder<T> length(final Integer length) {
+    public AmlMessageBuilder<T> length(Integer length) {
         return this;
     }
 }
