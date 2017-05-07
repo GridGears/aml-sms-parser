@@ -27,6 +27,7 @@ package at.gridgears.aml;
 import at.gridgears.aml.exceptions.AmlException;
 import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
+import at.gridgears.aml.validation.DefaultValidator;
 import at.gridgears.aml.validation.Validator;
 import org.junit.Before;
 import org.junit.Rule;
@@ -47,156 +48,156 @@ import static org.mockito.Mockito.verify;
 @SuppressWarnings("PMD.TooManyStaticImports")
 public class AmlMessageParserTest {
 
-	@Rule
-	public ExpectedException thrown = ExpectedException.none();
+    @Rule
+    public ExpectedException thrown = ExpectedException.none();
 
-	private AmlMessageParser parser;
+    private AmlMessageParser parser;
 
-	@Before
-	public void init() {
-		this.parser = new AmlMessageParser(new Settings(new NoValidation()));
-	}
-
-
-	@Test
-	public void validAmlMessageWithDefaultValidation() throws AmlException, ParseException {
-		String validMessage = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
-
-		AmlMessage amlMessage = new AmlMessageParser().parse(validMessage);
-
-		assertThat(amlMessage.getVersion(),is(1));
-		assertThat(amlMessage.getLatitude(),is(54.76397D));
-		assertThat(amlMessage.getLongitude(),is(-0.18305D));
-		assertThat(amlMessage.getRadiusMeters(),is(50D));
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		assertThat(amlMessage.getTimeOfPositioning(),is(dateFormat.parse("2013-07-17_14:19:35").toInstant()));
-		assertThat(amlMessage.getLevelOfConfidence(),is(90));
-		assertThat(amlMessage.getPositionMethod(), is(AmlMessage.PositioningMethod.WIFI_SIGNAL));
-		assertThat(amlMessage.getImsi(),is("123456789012345"));
-		assertThat(amlMessage.getImei(),is("1234567890123456"));
-		assertThat(amlMessage.getMcc(),is("234"));
-		assertThat(amlMessage.getMnc(),is("30"));
-		assertThat(amlMessage.getLength(),is(128));
-	}
-
-	@Test
-	public void verifyInteractionWithValidator() throws AmlException {
-		Settings settings = new Settings(mock(Validator.class));
-		String validMessage = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
-
-		new AmlMessageParser(settings).parse(validMessage);
-
-		verify(settings.getValidator()).validate(any(AmlMessage.class));
-	}
+    @Before
+    public void init() {
+        this.parser = new AmlMessageParser();
+    }
 
 
-	@Test
-	public void invalidMessageLength() throws AmlException {
-		String invalidMessageLength = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=10";
+    @Test
+    public void validAmlMessageWithDefaultValidation() throws AmlException, ParseException {
+        String validMessage = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
 
-		thrown.expect(AmlParseException.class);
+        AmlMessage amlMessage = new AmlMessageParser().parse(validMessage);
 
-		parser.parse(invalidMessageLength);
-	}
+        assertThat(amlMessage.getVersion(), is(1));
+        assertThat(amlMessage.getLatitude(), is(54.76397D));
+        assertThat(amlMessage.getLongitude(), is(-0.18305D));
+        assertThat(amlMessage.getRadiusMeters(), is(50D));
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        assertThat(amlMessage.getTimeOfPositioning(), is(dateFormat.parse("2013-07-17_14:19:35").toInstant()));
+        assertThat(amlMessage.getLevelOfConfidence(), is(90));
+        assertThat(amlMessage.getPositionMethod(), is(AmlMessage.PositioningMethod.WIFI_SIGNAL));
+        assertThat(amlMessage.getImsi(), is("123456789012345"));
+        assertThat(amlMessage.getImei(), is("1234567890123456"));
+        assertThat(amlMessage.getMcc(), is("234"));
+        assertThat(amlMessage.getMnc(), is("30"));
+        assertThat(amlMessage.getLength(), is(128));
+    }
 
-	@Test
-	public void unknownAttribute() throws AmlException {
-		String unknownAttribute = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;kl=23;ml=134";
+    @Test
+    public void verifyInteractionWithValidator() throws AmlException {
+        Validator<AmlMessage> validator = mock(DefaultValidator.class);
+        String validMessage = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
 
-		thrown.expect(AmlParseException.class);
+        parser.parse(validMessage, DefaultAmlMessageBuilder.newAdvancedMobileLocation(), validator);
 
-		parser.parse(unknownAttribute);
-	}
+        verify(validator).validate(any(AmlMessage.class));
+    }
 
-	@Test
-	public void incorrectDateFormat() throws AmlException {
-		String invalidDateFormat = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=122";
 
-		thrown.expect(AmlParseException.class);
+    @Test
+    public void invalidMessageLength() throws AmlException {
+        String invalidMessageLength = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=10";
 
-		parser.parse(invalidDateFormat);
-	}
+        thrown.expect(AmlParseException.class);
 
-	@Test
-	public void unknownPositioningMethod() throws AmlException {
-		String unknownPositioningMethod = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=Z;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
+        parser.parse(invalidMessageLength);
+    }
 
-		thrown.expect(AmlParseException.class);
+    @Test
+    public void unknownAttribute() throws AmlException {
+        String unknownAttribute = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;kl=23;ml=134";
 
-		parser.parse(unknownPositioningMethod);
-	}
+        thrown.expect(AmlParseException.class);
 
-	@Test
-	public void invalidLatitude() throws AmlException {
-		String invalidLatitude = "A\"ML=1;lt=+g4.7d397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
+        parser.parse(unknownAttribute);
+    }
 
-		thrown.expect(AmlParseException.class);
+    @Test
+    public void incorrectDateFormat() throws AmlException {
+        String invalidDateFormat = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=122";
 
-		parser.parse(invalidLatitude);
-	}
+        thrown.expect(AmlParseException.class);
 
-	@Test
-	public void invalidLevelOfConfidence() throws AmlException {
-		String invalidLevelOfConfidence = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=99.9;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=130";
+        parser.parse(invalidDateFormat);
+    }
 
-		thrown.expect(AmlParseException.class);
+    @Test
+    public void unknownPositioningMethod() throws AmlException {
+        String unknownPositioningMethod = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=Z;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
 
-		parser.parse(invalidLevelOfConfidence);
-	}
+        thrown.expect(AmlParseException.class);
 
-	@Test
-	public void noHeaderValue() throws AmlException {
-		String noHeaderValue = "lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=121";
+        parser.parse(unknownPositioningMethod);
+    }
 
-		AmlMessage message = parser.parse(noHeaderValue);
+    @Test
+    public void invalidLatitude() throws AmlException {
+        String invalidLatitude = "A\"ML=1;lt=+g4.7d397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=128";
 
-		assertThat(message.getVersion(), nullValue());
-	}
+        thrown.expect(AmlParseException.class);
 
-	@Test
-	public void noLatitude() throws AmlException {
-		String noLatitude = "A\"ML=1;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=115";
+        parser.parse(invalidLatitude);
+    }
 
-		AmlMessage message = parser.parse(noLatitude);
+    @Test
+    public void invalidLevelOfConfidence() throws AmlException {
+        String invalidLevelOfConfidence = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=99.9;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=130";
 
-		assertThat(message.getLatitude(), nullValue());
-	}
+        thrown.expect(AmlParseException.class);
 
-	@Test
-	public void noPositioningMethod() throws AmlException {
-		String noPositionMethod = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=123";
+        parser.parse(invalidLevelOfConfidence);
+    }
 
-		AmlMessage message = parser.parse(noPositionMethod);
+    @Test
+    public void noHeaderValue() throws AmlException {
+        String noHeaderValue = "lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=121";
 
-		assertThat(message.getPositionMethod(), nullValue());
-	}
+        AmlMessage message = parser.parse(noHeaderValue, DefaultAmlMessageBuilder.newAdvancedMobileLocation(), new NoValidation());
 
-	@Test
-	public void noImsi() throws AmlException {
-		String noImsi = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;ei=1234567890123456;mcc=234;mnc=30;ml=109";
+        assertThat(message.getVersion(), nullValue());
+    }
 
-		AmlMessage message = parser.parse(noImsi);
+    @Test
+    public void noLatitude() throws AmlException {
+        String noLatitude = "A\"ML=1;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=115";
 
-		assertThat(message.getImsi(), nullValue());
-	}
+        AmlMessage message = parser.parse(noLatitude);
 
-	@Test
-	public void noTimeOfPositioning() throws AmlException {
-		String noTimeOfPositioning = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=109";
+        assertThat(message.getLatitude(), nullValue());
+    }
 
-		AmlMessage message = parser.parse(noTimeOfPositioning);
+    @Test
+    public void noPositioningMethod() throws AmlException {
+        String noPositionMethod = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=123";
 
-		assertThat(message.getTimeOfPositioning(), nullValue());
-	}
+        AmlMessage message = parser.parse(noPositionMethod);
 
-	@Test
+        assertThat(message.getPositionMethod(), nullValue());
+    }
+
+    @Test
+    public void noImsi() throws AmlException {
+        String noImsi = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;ei=1234567890123456;mcc=234;mnc=30;ml=109";
+
+        AmlMessage message = parser.parse(noImsi);
+
+        assertThat(message.getImsi(), nullValue());
+    }
+
+    @Test
+    public void noTimeOfPositioning() throws AmlException {
+        String noTimeOfPositioning = "A\"ML=1;lt=+54.76397;lg=-0.18305;rd=50;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=109";
+
+        AmlMessage message = parser.parse(noTimeOfPositioning);
+
+        assertThat(message.getTimeOfPositioning(), nullValue());
+    }
+
+    @Test
     public void invalidAttributePair() throws AmlException {
-	    String invalidAttribute = "A\"ML=1;a==;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=132";
+        String invalidAttribute = "A\"ML=1;a==;lt=+54.76397;lg=-0.18305;rd=50;top=20130717141935;lc=90;pm=W;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=132";
 
-	    thrown.expect(AmlParseException.class);
+        thrown.expect(AmlParseException.class);
 
-	    parser.parse(invalidAttribute);
+        parser.parse(invalidAttribute);
     }
 
 
@@ -210,12 +211,10 @@ public class AmlMessageParserTest {
     }
 
 
-
-    private static class NoValidation implements Validator {
-
-		@Override
-		public AmlMessage validate(AmlMessage message) throws AmlValidationException {
-			return message;
-		}
-	}
+    private static class NoValidation implements Validator<AmlMessage> {
+        @Override
+        public AmlMessage validate(AmlMessage message) throws AmlValidationException {
+            return message;
+        }
+    }
 }

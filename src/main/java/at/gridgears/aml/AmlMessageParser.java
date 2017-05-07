@@ -26,31 +26,19 @@ package at.gridgears.aml;
 
 import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
+import at.gridgears.aml.validation.DefaultValidator;
 import at.gridgears.aml.validation.Validator;
 
 import java.time.Instant;
 import java.util.Objects;
 
 public class AmlMessageParser {
-
-    private final Validator validator;
-
-    public AmlMessageParser() {
-        this(new Settings());
-    }
-
-    public AmlMessageParser(Settings settings) {
-        validator = settings.getValidator();
-    }
-
-    public AmlMessage parse(final String message) throws AmlParseException, AmlValidationException {
+    public <T> T parse(final String message, AmlMessageBuilder<T> builder) throws AmlParseException, AmlValidationException {
         Attributes attributes = Attributes.parse(message);
 
         checkMessageLength(message, attributes);
         checkAttributes(attributes);
-
-        AmlMessageBuilder builder = AmlMessageBuilder.newAdvancedMobileLocation()
-                .version(getHeaderValue(attributes))
+        return builder.version(getHeaderValue(attributes))
                 .latitude(getLatitude(attributes))
                 .longitude(getLongitude(attributes))
                 .radiusMeters(getRadius(attributes))
@@ -61,10 +49,16 @@ public class AmlMessageParser {
                 .mnc(getMnc(attributes))
                 .timeOfPositioning(getTop(attributes))
                 .positionMethod(getPositioningMethod(attributes))
-                .length(getMessageLength(attributes));
+                .length(getMessageLength(attributes))
+                .build();
+    }
 
+    public <T> T parse(final String message, AmlMessageBuilder<T> builder, Validator<T> validator) throws AmlParseException, AmlValidationException {
+        return validator.validate(parse(message, builder));
+    }
 
-        return validator.validate(builder.build());
+    public AmlMessage parse(final String message) throws AmlParseException, AmlValidationException {
+        return parse(message, DefaultAmlMessageBuilder.newAdvancedMobileLocation(), new DefaultValidator());
     }
 
     private void checkAttributes(Attributes attributes) throws AmlParseException {

@@ -39,7 +39,7 @@ import static org.junit.Assert.assertThat;
 
 public class DefaultValidatorTest {
 
-    private AmlMessageBuilder builder;
+    private DefaultAmlMessageBuilder builder;
 
     private DefaultValidator validator = new DefaultValidator();
 
@@ -48,7 +48,7 @@ public class DefaultValidatorTest {
 
     @Before
     public void init() {
-        builder = AmlMessageBuilder.newAdvancedMobileLocation()
+        builder = DefaultAmlMessageBuilder.newAdvancedMobileLocation()
                 .version(1)
                 .latitude(54.4)
                 .longitude(12.32)

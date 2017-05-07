@@ -29,7 +29,7 @@ import at.gridgears.aml.exceptions.AmlValidationException;
 
 import java.util.Objects;
 
-public class DefaultValidator implements Validator {
+public class DefaultValidator implements Validator<AmlMessage> {
 
     public AmlMessage validate(AmlMessage candidate) throws AmlValidationException {
         if (!Objects.equals(1, candidate.getVersion())) {

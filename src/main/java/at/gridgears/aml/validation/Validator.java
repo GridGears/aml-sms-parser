@@ -24,10 +24,9 @@
 
 package at.gridgears.aml.validation;
 
-import at.gridgears.aml.AmlMessage;
 import at.gridgears.aml.exceptions.AmlValidationException;
 
-public interface Validator {
+public interface Validator<T> {
 
-    AmlMessage validate(AmlMessage amlMessage) throws AmlValidationException;
+    T validate(T amlMessage) throws AmlValidationException;
 }

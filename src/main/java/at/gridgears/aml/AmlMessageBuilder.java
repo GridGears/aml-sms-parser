@@ -26,88 +26,30 @@ package at.gridgears.aml;
 
 import java.time.Instant;
 
-public final class AmlMessageBuilder {
-    private Integer version;
-    private Double latitude;
-    private Double longitude;
-    private Double radiusMeters;
-    private String imsi;
-    private String imei;
-    private Instant timeOfPositioning;
-    private Integer levelOfConfidence;
-    private AmlMessage.PositioningMethod positionMethod;
-    private String mcc;
-    private String mnc;
-    private Integer length;
+public interface AmlMessageBuilder<T> {
+    AmlMessageBuilder<T> version(Integer version);
 
-    private AmlMessageBuilder() {
-    }
+    AmlMessageBuilder<T> latitude(Double latitude);
 
-    public static AmlMessageBuilder newAdvancedMobileLocation() {
-        return new AmlMessageBuilder();
-    }
+    AmlMessageBuilder<T> longitude(Double longitude);
 
-    public AmlMessageBuilder version(Integer version) {
-        this.version = version;
-        return this;
-    }
+    AmlMessageBuilder<T> radiusMeters(Double radiusMeters);
 
-    public AmlMessageBuilder latitude(Double latitude) {
-        this.latitude = latitude;
-        return this;
-    }
+    AmlMessageBuilder<T> imsi(String imsi);
 
-    public AmlMessageBuilder longitude(Double longitude) {
-        this.longitude = longitude;
-        return this;
-    }
+    AmlMessageBuilder<T> imei(String imei);
 
-    public AmlMessageBuilder radiusMeters(Double radiusMeters) {
-        this.radiusMeters = radiusMeters;
-        return this;
-    }
+    AmlMessageBuilder<T> timeOfPositioning(Instant timeOfPositioning);
 
-    public AmlMessageBuilder imsi(String imsi) {
-        this.imsi = imsi;
-        return this;
-    }
+    AmlMessageBuilder<T> levelOfConfidence(Integer levelOfConfidence);
 
-    public AmlMessageBuilder imei(String imei) {
-        this.imei = imei;
-        return this;
-    }
+    AmlMessageBuilder<T> positionMethod(AmlMessage.PositioningMethod positionMethod);
 
-    public AmlMessageBuilder timeOfPositioning(Instant timeOfPositioning) {
-        this.timeOfPositioning = timeOfPositioning;
-        return this;
-    }
+    AmlMessageBuilder<T> mcc(String mcc);
 
-    public AmlMessageBuilder levelOfConfidence(Integer levelOfConfidence) {
-        this.levelOfConfidence = levelOfConfidence;
-        return this;
-    }
+    AmlMessageBuilder<T> mnc(String mnc);
 
-    public AmlMessageBuilder positionMethod(AmlMessage.PositioningMethod positionMethod) {
-        this.positionMethod = positionMethod;
-        return this;
-    }
+    AmlMessageBuilder<T> length(Integer length);
 
-    public AmlMessageBuilder mcc(String mcc) {
-        this.mcc = mcc;
-        return this;
-    }
-
-    public AmlMessageBuilder mnc(String mnc) {
-        this.mnc = mnc;
-        return this;
-    }
-
-    public AmlMessageBuilder length(Integer length) {
-        this.length = length;
-        return this;
-    }
-
-    public AmlMessage build() {
-        return new AmlMessage(version, latitude, longitude, radiusMeters, imsi, imei, timeOfPositioning, levelOfConfidence, positionMethod, mcc, mnc, length);
-    }
+    T build();
 }
