@@ -24,32 +24,9 @@
 
 package at.gridgears.aml;
 
-import java.time.Instant;
-
-public interface AmlMessageBuilder<T> {
-    AmlMessageBuilder<T> version(Integer version);
-
-    AmlMessageBuilder<T> latitude(Double latitude);
-
-    AmlMessageBuilder<T> longitude(Double longitude);
-
-    AmlMessageBuilder<T> radiusMeters(Double radiusMeters);
-
-    AmlMessageBuilder<T> imsi(String imsi);
-
-    AmlMessageBuilder<T> imei(String imei);
-
-    AmlMessageBuilder<T> timeOfPositioning(Instant timeOfPositioning);
-
-    AmlMessageBuilder<T> levelOfConfidence(Integer levelOfConfidence);
-
-    AmlMessageBuilder<T> positionMethod(AmlMessage.PositioningMethod positionMethod);
-
-    AmlMessageBuilder<T> mcc(String mcc);
-
-    AmlMessageBuilder<T> mnc(String mnc);
-
-    AmlMessageBuilder<T> length(Integer length);
-
-    T build();
+public enum PositioningMethod {
+    GNSS,
+    WIFI_SIGNAL,
+    CELL,
+    NO_LOCATION
 }

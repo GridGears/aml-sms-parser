@@ -24,6 +24,7 @@
 
 package at.gridgears.aml;
 
+import at.gridgears.aml.builder.DefaultAmlMessageBuilder;
 import at.gridgears.aml.exceptions.AmlException;
 import at.gridgears.aml.exceptions.AmlValidationException;
 import at.gridgears.aml.validation.DefaultValidator;
@@ -55,7 +56,7 @@ public class DefaultValidatorTest {
                 .radiusMeters(34.2)
                 .timeOfPositioning(Instant.now())
                 .levelOfConfidence(85)
-                .positionMethod(AmlMessage.PositioningMethod.CELL)
+                .positionMethod(PositioningMethod.CELL)
                 .imsi("1654321654")
                 .imei("65897654654")
                 .mcc("234")

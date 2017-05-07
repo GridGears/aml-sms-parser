@@ -24,6 +24,8 @@
 
 package at.gridgears.aml;
 
+import at.gridgears.aml.builder.AmlMessageBuilder;
+import at.gridgears.aml.builder.DefaultAmlMessageBuilder;
 import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
 import at.gridgears.aml.validation.DefaultValidator;
@@ -98,7 +100,7 @@ public class AmlMessageParser {
         return attributes.get("lc", Attribute::getIntegerValue);
     }
 
-    private AmlMessage.PositioningMethod getPositioningMethod(Attributes attributes) throws AmlParseException {
+    private PositioningMethod getPositioningMethod(Attributes attributes) throws AmlParseException {
         return attributes.get("pm", Attribute::getPositioningMethod);
     }
 

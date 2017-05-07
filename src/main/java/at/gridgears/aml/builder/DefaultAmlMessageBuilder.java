@@ -22,7 +22,10 @@
  * SOFTWARE.
  */
 
-package at.gridgears.aml;
+package at.gridgears.aml.builder;
+
+import at.gridgears.aml.AmlMessage;
+import at.gridgears.aml.PositioningMethod;
 
 import java.time.Instant;
 
@@ -35,7 +38,7 @@ public final class DefaultAmlMessageBuilder implements AmlMessageBuilder<AmlMess
     private String imei;
     private Instant timeOfPositioning;
     private Integer levelOfConfidence;
-    private AmlMessage.PositioningMethod positionMethod;
+    private PositioningMethod positionMethod;
     private String mcc;
     private String mnc;
     private Integer length;
@@ -96,7 +99,7 @@ public final class DefaultAmlMessageBuilder implements AmlMessageBuilder<AmlMess
     }
 
     @Override
-    public DefaultAmlMessageBuilder positionMethod(AmlMessage.PositioningMethod positionMethod) {
+    public DefaultAmlMessageBuilder positionMethod(PositioningMethod positionMethod) {
         this.positionMethod = positionMethod;
         return this;
     }

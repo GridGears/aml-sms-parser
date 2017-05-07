@@ -22,31 +22,36 @@
  * SOFTWARE.
  */
 
-package at.gridgears.aml;
+package at.gridgears.aml.builder;
 
-import java.util.Objects;
+import at.gridgears.aml.PositioningMethod;
 
-import static at.gridgears.aml.PositioningMethod.*;
+import java.time.Instant;
 
-final class PositioningMethodMapper {
+public interface AmlMessageBuilder<T> {
+    AmlMessageBuilder<T> version(Integer version);
 
-    PositioningMethod get(final String pm) {
-        if (Objects.isNull(pm)) {
-            return null;
-        }
+    AmlMessageBuilder<T> latitude(Double latitude);
 
-        switch (pm) {
-            case "G":
-                return GNSS;
-            case "W":
-                return WIFI_SIGNAL;
-            case "C":
-                return CELL;
-            case "N":
-                return NO_LOCATION;
-            default:
-                throw new IllegalArgumentException("Cannot map PositioningMethod " + pm);
-        }
-    }
+    AmlMessageBuilder<T> longitude(Double longitude);
 
+    AmlMessageBuilder<T> radiusMeters(Double radiusMeters);
+
+    AmlMessageBuilder<T> imsi(String imsi);
+
+    AmlMessageBuilder<T> imei(String imei);
+
+    AmlMessageBuilder<T> timeOfPositioning(Instant timeOfPositioning);
+
+    AmlMessageBuilder<T> levelOfConfidence(Integer levelOfConfidence);
+
+    AmlMessageBuilder<T> positionMethod(PositioningMethod positionMethod);
+
+    AmlMessageBuilder<T> mcc(String mcc);
+
+    AmlMessageBuilder<T> mnc(String mnc);
+
+    AmlMessageBuilder<T> length(Integer length);
+
+    T build();
 }

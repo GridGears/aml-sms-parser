@@ -116,13 +116,6 @@ public final class AmlMessage {
         return length;
     }
 
-    public enum PositioningMethod {
-        GNSS,
-        WIFI_SIGNAL,
-        CELL,
-        NO_LOCATION
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {

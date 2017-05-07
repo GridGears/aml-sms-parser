@@ -24,6 +24,7 @@
 
 package at.gridgears.aml;
 
+import at.gridgears.aml.builder.DefaultAmlMessageBuilder;
 import at.gridgears.aml.exceptions.AmlException;
 import at.gridgears.aml.exceptions.AmlParseException;
 import at.gridgears.aml.exceptions.AmlValidationException;
@@ -73,7 +74,7 @@ public class AmlMessageParserTest {
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         assertThat(amlMessage.getTimeOfPositioning(), is(dateFormat.parse("2013-07-17_14:19:35").toInstant()));
         assertThat(amlMessage.getLevelOfConfidence(), is(90));
-        assertThat(amlMessage.getPositionMethod(), is(AmlMessage.PositioningMethod.WIFI_SIGNAL));
+        assertThat(amlMessage.getPositionMethod(), is(PositioningMethod.WIFI_SIGNAL));
         assertThat(amlMessage.getImsi(), is("123456789012345"));
         assertThat(amlMessage.getImei(), is("1234567890123456"));
         assertThat(amlMessage.getMcc(), is("234"));

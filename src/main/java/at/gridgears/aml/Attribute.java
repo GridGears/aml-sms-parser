@@ -91,7 +91,7 @@ class Attribute {
         }
     }
 
-    AmlMessage.PositioningMethod getPositioningMethod() {
+    PositioningMethod getPositioningMethod() {
         try {
             return POSITIONING_METHOD_MAPPER.get(value);
         } catch (IllegalArgumentException e) {
