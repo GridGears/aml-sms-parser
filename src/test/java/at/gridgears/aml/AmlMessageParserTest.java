@@ -27,7 +27,6 @@ package at.gridgears.aml;
 import at.gridgears.aml.builder.DefaultAmlMessageBuilder;
 import at.gridgears.aml.exceptions.AmlException;
 import at.gridgears.aml.exceptions.AmlParseException;
-import at.gridgears.aml.exceptions.AmlValidationException;
 import at.gridgears.aml.validation.DefaultValidator;
 import at.gridgears.aml.validation.Validator;
 import org.junit.Before;
@@ -211,10 +210,32 @@ public class AmlMessageParserTest {
         parser.parse(invalidAttribute);
     }
 
+    @Test
+    public void validAmlMessageNoLocation() throws AmlException, ParseException {
+        String validMessage = "A\"ML=1;lt=+00.00000;lg=+000.00000;rd=N;top=20130717141935;lc=90;pm=N;si=123456789012345;ei=1234567890123456;mcc=234;mnc=30;ml=129";
+
+        AmlMessage amlMessage = new AmlMessageParser().parse(validMessage);
+
+        assertThat(amlMessage.getVersion(), is(1));
+        assertThat(amlMessage.getLatitude(), is(0.0));
+        assertThat(amlMessage.getLongitude(), is(0.0));
+        assertThat(amlMessage.getRadiusMeters(), nullValue());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_hh:mm:ss");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        assertThat(amlMessage.getTimeOfPositioning(), is(dateFormat.parse("2013-07-17_14:19:35").toInstant()));
+        assertThat(amlMessage.getLevelOfConfidence(), is(90));
+        assertThat(amlMessage.getPositionMethod(), is(PositioningMethod.NO_LOCATION));
+        assertThat(amlMessage.getImsi(), is("123456789012345"));
+        assertThat(amlMessage.getImei(), is("1234567890123456"));
+        assertThat(amlMessage.getMcc(), is("234"));
+        assertThat(amlMessage.getMnc(), is("30"));
+        assertThat(amlMessage.getLength(), is(129));
+    }
+
 
     private static class NoValidation implements Validator<AmlMessage> {
         @Override
-        public AmlMessage validate(AmlMessage message) throws AmlValidationException {
+        public AmlMessage validate(AmlMessage message) {
             return message;
         }
     }

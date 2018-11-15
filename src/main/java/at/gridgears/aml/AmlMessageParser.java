@@ -89,7 +89,8 @@ public class AmlMessageParser {
     }
 
     private Double getRadius(Attributes attributes) throws AmlParseException {
-        return attributes.get("rd", Attribute::getDoubleValue);
+        String rd = attributes.get("rd", Attribute::getStringValue);
+        return rd.equals("N") ? null : Double.valueOf(rd);
     }
 
     private Instant getTop(Attributes attributes) throws AmlParseException {
