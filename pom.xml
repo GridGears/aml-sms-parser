@@ -4,7 +4,7 @@
     <groupId>at.gridgears</groupId>
     <artifactId>aml-sms-parser</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>aml-sms-parser</name>
     <description>Parser for Advanced Mobile Location (AML)</description>
