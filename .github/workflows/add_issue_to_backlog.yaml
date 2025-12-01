@@ -1,0 +1,12 @@
+name: Add Issue to Project
+
+on:
+  issues:
+    types:
+      - opened
+
+jobs:
+  add_issue_to_backlog:
+    uses: GridGears/.ci/.github/workflows/add_issue_to_backlog.yaml@main
+    secrets:
+      add_to_backlog_pat: ${{ secrets.ADD_TO_BACKLOG_PAT }}
